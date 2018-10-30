@@ -10,5 +10,21 @@
   "license": "MIT",
   "devDependencies": {
     "jest": "^23.6.0"
-  }
+  },
+  "main": "index.js",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stojanovic/serverless-slack-slash-command-app.git"
+  },
+  "keywords": [
+    "slack",
+    "slash",
+    "command",
+    "serverless"
+  ],
+  "bugs": {
+    "url": "https://github.com/stojanovic/serverless-slack-slash-command-app/issues"
+  },
+  "homepage": "https://github.com/stojanovic/serverless-slack-slash-command-app#readme"
 }
