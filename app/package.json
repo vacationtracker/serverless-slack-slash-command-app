@@ -1,0 +1,28 @@
+{
+  "name": "@serverless-slack-command/app",
+  "version": "1.0.0",
+  "description": "Serverless Slack app",
+  "main": "index.js",
+  "scripts": {
+    "assemble": "claudia pack --no-optional-dependencies --output package.zip --force",
+    "validate": "aws cloudformation validate-template --template-body file://./template.yaml --region $npm_package_config_region",
+    "package": "echo packaging $npm_package_config_region to $npm_package_config_bucket_name && aws cloudformation package --template-file template.yaml --output-template-file output.yaml --s3-bucket $npm_package_config_bucket_name --region $npm_package_config_region --s3-prefix $npm_package_version",
+    "deploy": "npm run package && aws cloudformation deploy --template-file output.yaml --stack-name $npm_package_config_cloudformation_stack --capabilities CAPABILITY_IAM --region $npm_package_config_region --parameter-overrides SlackClientId='296834272197.296691210227' SlackClientSecret='eb552252031c076f20bcb2b1123ae043' SlackVerificationToken='1ea3cc144a7cbfdfd1379491b4f69922' LandingPageRedirect='https://cloudhorizon.com'"
+  },
+  "config": {
+    "bucket_name": "sam-deployment-slobodan",
+    "deployment_regions": "us-east-2",
+    "cloudformation_stack": "slackSlashStack",
+    "region": "us-east-2"
+  },
+  "dependencies": {
+    "@serverless-slack-command/landing-page": "file:../code/landing-page",
+    "@serverless-slack-command/message-action": "file:../code/message-action",
+    "@serverless-slack-command/slash-command": "file:../code/slash-command"
+  },
+  "devDependencies": {
+    "claudia": "^5.1.2"
+  },
+  "author": "Slobodan Stojanović <slobodan@cloudhorizon.com> (http://slobodan.me)",
+  "license": "MIT"
+}

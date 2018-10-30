@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Serverless Slack slash command application
+
+Globals:
+  Function:
+    Timeout: 3
+    Runtime: nodejs8.10
+
+Parameters:
+  SlackClientId:
+    Type: String
+    Default: ''
+    Description: Slack Client ID
+
+  SlackClientSecret:
+    Type: String
+    Default: ''
+    Description: Slack Client Secret
+
+  SlackVerificationToken:
+    Type: String
+    Default: ''
+    Description: Slack verification token
+
+  LandingPageRedirect:
+    Type: String
+    Default: ''
+    Description: Where to redirect after authentication
+  
+Resources:
+  SlackTopic:
+    Type: AWS::SNS::Topic
+
+  # User will be redirected here after Slack auth
+  LandingPage:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: package.zip
+      Handler: landing-page.handler
+      Environment:
+        Variables:
+          notificationTopic: !Ref SlackTopic
+          slackClientId: !Ref SlackClientId
+          slackClientSecret: !Ref SlackClientSecret
+          redirectUrl: !Ref LandingPageRedirect
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt SlackTopic.TopicName
+      Events:
+        PostResource:
+          Type: Api
+          Properties:
+            Path: /landing
+            Method: GET
+
+  PostSlashCommand:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: package.zip
+      Handler: slash-command.handler
+      Environment:
+        Variables:
+          notificationTopic: !Ref SlackTopic
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt SlackTopic.TopicName
+      Events:
+        PostResource:
+          Type: Api
+          Properties:
+            Path: /slash-command
+            Method: POST
+        OptionsResource:
+          Type: Api
+          Properties:
+            Path: /slash-command
+            Method: OPTIONS
+
+  PostMessageAction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: package.zip
+      Handler: message-action.handler
+      Environment:
+        Variables:
+          notificationTopic: !Ref SlackTopic
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt SlackTopic.TopicName
+      Events:
+        PostResource:
+          Type: Api
+          Properties:
+            Path: /message-action
+            Method: POST
+        OptionsResource:
+          Type: Api
+          Properties:
+            Path: /message-action
+            Method: OPTIONS
+
+Outputs:
+  SlashCommandApi:
+    Description: Slash command URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${ServerlessRestApiProdStage}/slash-command"
+  MessageActionApi:
+    Description: Message Action URL
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${ServerlessRestApiProdStage}/message-action"
+  SlackSNSTopic:
+    Value: !Ref SlackTopic
+    Description: SNS Topic for Slack Events
+    Export:
+      Name: SlackSlashCommandTopic

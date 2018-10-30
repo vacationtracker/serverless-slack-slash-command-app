@@ -1,0 +1,14 @@
+{
+  "name": "serverless-slack-command",
+  "version": "1.0.0",
+  "description": "Serverless Slack slash command application",
+  "scripts": {
+    "pretest": "node scripts/install.js",
+    "test": "jest --projects code/*"
+  },
+  "author": "Slobodan Stojanović <slobodan@cloudhorizon.com> (http://slobodan.me)",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
+}

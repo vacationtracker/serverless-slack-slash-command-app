@@ -1,0 +1,17 @@
+{
+  "name": "@serverless-slack-command/slash-command",
+  "version": "1.0.0",
+  "description": "Slash command",
+  "main": "src/lambda.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest --color"
+  },
+  "dependencies": {
+    "@serverless-slack-command/common": "file:../common"
+  },
+  "author": "Slobodan Stojanović <slobodan@cloudhorizon.com> (http://slobodan.me)",
+  "license": "MIT"
+}

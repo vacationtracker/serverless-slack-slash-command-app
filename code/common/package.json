@@ -1,0 +1,20 @@
+{
+  "name": "@serverless-slack-command/common",
+  "version": "1.0.0",
+  "description": "Common code",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest --color"
+  },
+  "author": "Slobodan Stojanović <slobodan@cloudhorizon.com> (http://slobodan.me)",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  },
+  "optionalDependencies": {
+    "aws-sdk": "^2.339.0"
+  }
+}

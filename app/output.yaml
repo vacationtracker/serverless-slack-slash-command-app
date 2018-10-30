@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Vacation Tracker API
+Globals:
+  Function:
+    Runtime: nodejs8.10
+    Timeout: 3
+Outputs:
+  MessageActionApi:
+    Description: Message Action URL
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${ServerlessRestApiProdStage}/message-action
+  SlackSNSTopic:
+    Description: SNS Topic for Slack Events
+    Value:
+      Ref: SlackTopic
+  SlashCommandApi:
+    Description: Slash command URL
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${ServerlessRestApiProdStage}/slash-command
+Parameters:
+  LandingPageRedirect:
+    Default: ''
+    Description: Where to redirect after authentication
+    Type: String
+  SlackClientId:
+    Default: ''
+    Description: Slack Client ID
+    Type: String
+  SlackClientSecret:
+    Default: ''
+    Description: Slack Client Secret
+    Type: String
+  SlackVerificationToken:
+    Default: ''
+    Description: Slack verification token
+    Type: String
+Resources:
+  GetSlashCommand:
+    Properties:
+      CodeUri: s3://sam-deployment-slobodan/1.0.0/8e62cb56172485bca49c18501070d6e9
+      Events:
+        PostResource:
+          Properties:
+            Method: GET
+            Path: /slash-command
+          Type: Api
+      Handler: index.handler
+      InlineCode: 'exports.handler = async () => ''ok''
+
+        '
+    Type: AWS::Serverless::Function
+  LandingPage:
+    Properties:
+      CodeUri: s3://sam-deployment-slobodan/1.0.0/f7f12b55995c37418dc5c292c087c9ff
+      Environment:
+        Variables:
+          notificationTopic:
+            Ref: SlackTopic
+          redirectUrl:
+            Ref: LandingPageRedirect
+          slackClientId:
+            Ref: SlackClientId
+          slackClientSecret:
+            Ref: SlackClientSecret
+      Events:
+        PostResource:
+          Properties:
+            Method: GET
+            Path: /landing
+          Type: Api
+      Handler: landing-page.handler
+      Policies:
+      - SNSPublishMessagePolicy:
+          TopicName:
+            Fn::GetAtt:
+            - SlackTopic
+            - TopicName
+    Type: AWS::Serverless::Function
+  PostMessageAction:
+    Properties:
+      CodeUri: s3://sam-deployment-slobodan/1.0.0/f7f12b55995c37418dc5c292c087c9ff
+      Environment:
+        Variables:
+          notificationTopic:
+            Ref: SlackTopic
+      Events:
+        OptionsResource:
+          Properties:
+            Method: OPTIONS
+            Path: /message-action
+          Type: Api
+        PostResource:
+          Properties:
+            Method: POST
+            Path: /message-action
+          Type: Api
+      Handler: message-action.handler
+      Policies:
+      - SNSPublishMessagePolicy:
+          TopicName:
+            Fn::GetAtt:
+            - SlackTopic
+            - TopicName
+    Type: AWS::Serverless::Function
+  PostSlashCommand:
+    Properties:
+      CodeUri: s3://sam-deployment-slobodan/1.0.0/f7f12b55995c37418dc5c292c087c9ff
+      Environment:
+        Variables:
+          notificationTopic:
+            Ref: SlackTopic
+      Events:
+        OptionsResource:
+          Properties:
+            Method: OPTIONS
+            Path: /slash-command
+          Type: Api
+        PostResource:
+          Properties:
+            Method: POST
+            Path: /slash-command
+          Type: Api
+      Handler: slash-command.handler
+      Policies:
+      - SNSPublishMessagePolicy:
+          TopicName:
+            Fn::GetAtt:
+            - SlackTopic
+            - TopicName
+    Type: AWS::Serverless::Function
+  SlackTopic:
+    Type: AWS::SNS::Topic
+Transform: AWS::Serverless-2016-10-31
