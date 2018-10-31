@@ -16,5 +16,9 @@
   },
   "optionalDependencies": {
     "aws-sdk": "^2.339.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stojanovic/serverless-slack-slash-command-app.git"
   }
 }

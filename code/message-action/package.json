@@ -9,6 +9,10 @@
   "scripts": {
     "test": "jest --color"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stojanovic/serverless-slack-slash-command-app.git"
+  },
   "author": "Slobodan Stojanović <slobodan@cloudhorizon.com> (http://slobodan.me)",
   "license": "MIT"
 }

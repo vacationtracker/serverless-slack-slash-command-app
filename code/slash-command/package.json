@@ -12,6 +12,10 @@
   "dependencies": {
     "@serverless-slack-command/common": "file:../common"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stojanovic/serverless-slack-slash-command-app.git"
+  },
   "author": "Slobodan Stojanović <slobodan@cloudhorizon.com> (http://slobodan.me)",
   "license": "MIT"
 }

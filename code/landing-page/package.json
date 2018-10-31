@@ -16,5 +16,9 @@
   },
   "devDependencies": {
     "jest": "^23.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stojanovic/serverless-slack-slash-command-app.git"
   }
 }

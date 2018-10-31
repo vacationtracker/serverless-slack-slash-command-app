@@ -2,16 +2,16 @@
 
 const qs = require('querystring')
 
-async function messageAction(slackEvent, headers, requestContext, notification) {
-  const eventData = qs.parse(slackEvent)
+async function messageAction(event, parseSlackButtonResponse, notification) {
+  const { slackEvent, headers } = parseSlackButtonResponse(event)
+  const eventData = qs.parse(slackEvent);
   return await notification.send({
-    type: 'MESSAGE_ACTION',
+    type: "MESSAGE_ACTION",
     payload: eventData,
     metadata: {
-      headers,
-      requestContext
+      headers
     }
-  })
+  });
 }
 
 module.exports = messageAction
