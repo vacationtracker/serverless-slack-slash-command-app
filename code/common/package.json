@@ -12,7 +12,8 @@
   "author": "Slobodan Stojanović <slobodan@cloudhorizon.com> (http://slobodan.me)",
   "license": "MIT",
   "devDependencies": {
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "sqs-consumer": "^3.8.0"
   },
   "optionalDependencies": {
     "aws-sdk": "^2.339.0"

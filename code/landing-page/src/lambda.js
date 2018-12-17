@@ -1,7 +1,8 @@
 'use strict'
 
 const {
-  httpResponse
+  httpResponse,
+  SnsNotificationRepository
 } = require('@serverless-slack-command/common')
 const rp = require('minimal-request-promise')
 const main = require('./main')
@@ -12,10 +13,9 @@ async function handler(event) {
 
   try {
     const code = event.queryStringParameters.code
-    const url = await main(rp, process.env, code)
-    return httpResponse('', 302, {
-      Location: url
-    })
+    const notification = new SnsNotificationRepository(process.env.notificationTopic)
+    const url = await main(rp, process.env, code, notification, event.requestContext)
+    return httpResponse('', 302, { Location: url })
   } catch(err) {
     return httpResponse(err, 400)
   }

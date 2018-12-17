@@ -1,6 +1,8 @@
 node_modules
 .DS_Store
 .vscode
+coverage
 package.zip
 package-lock.json
 app/output.yaml
+*.command

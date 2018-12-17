@@ -8,6 +8,12 @@ Globals:
     Runtime: nodejs8.10
 
 Parameters:
+  AppStage:
+    Type: String
+    Default: 'dev'
+    ConstraintDescription: A string that represents the stage is required.
+    Description: Application stage
+
   SlackClientId:
     Type: String
     Default: ''
@@ -32,6 +38,11 @@ Resources:
   SlackTopic:
     Type: AWS::SNS::Topic
 
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref AppStage
+
   # User will be redirected here after Slack auth
   LandingPage:
     Type: AWS::Serverless::Function
@@ -51,6 +62,7 @@ Resources:
         PostResource:
           Type: Api
           Properties:
+            RestApiId: !Ref Api
             Path: /landing
             Method: GET
 
@@ -69,13 +81,9 @@ Resources:
         PostResource:
           Type: Api
           Properties:
+            RestApiId: !Ref Api
             Path: /slash-command
             Method: POST
-        OptionsResource:
-          Type: Api
-          Properties:
-            Path: /slash-command
-            Method: OPTIONS
 
   PostMessageAction:
     Type: AWS::Serverless::Function
@@ -92,21 +100,20 @@ Resources:
         PostResource:
           Type: Api
           Properties:
+            RestApiId: !Ref Api
             Path: /message-action
             Method: POST
-        OptionsResource:
-          Type: Api
-          Properties:
-            Path: /message-action
-            Method: OPTIONS
 
 Outputs:
+  SlackRedirectUrl:
+    Description: Slack redirect URL
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${AppStage}/landing"
   SlashCommandApi:
     Description: Slash command URL
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${ServerlessRestApiProdStage}/slash-command"
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${AppStage}/slash-command"
   MessageActionApi:
     Description: Message Action URL
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/${ServerlessRestApiProdStage}/message-action"
+    Value: !Sub "https://${Api}.execute-api.${AWS::Region}.amazonaws.com/${AppStage}/message-action"
   SlackSNSTopic:
     Value: !Ref SlackTopic
     Description: SNS Topic for Slack Events
