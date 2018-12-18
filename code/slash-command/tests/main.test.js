@@ -104,5 +104,32 @@ describe('slashCommand', () => {
     })
   })
 
-  describe('integration', () => {})
+  describe('integration', () => {
+    const EventEmitter = require('events')
+    class LocalNotificationRepository extends EventEmitter {
+      send(data) {
+        this.emit('notification', data)
+      }
+    }
+
+    test('should invoke notification repository', async () => {
+      expect.assertions(1)
+      const notification = new LocalNotificationRepository()
+      notification.on('notification', data => {
+        expect(data).toEqual({
+          type: 'SLASH_COMMAND',
+          payload: {
+            test: 'ok',
+            vacationTracker: 'awesome'
+          },
+          metadata: {
+            headers: { 'Content-Type': 'application/json' },
+            requestContext: {}
+          }
+        })
+      })
+
+      await underTest('test=ok&vacationTracker=awesome', notification, { 'Content-Type': 'application/json' }, {})
+    })
+  })
 })
