@@ -17,5 +17,8 @@
     "url": "git+https://github.com/stojanovic/serverless-slack-slash-command-app.git"
   },
   "author": "Slobodan Stojanović <slobodan@cloudhorizon.com> (http://slobodan.me)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
 }
